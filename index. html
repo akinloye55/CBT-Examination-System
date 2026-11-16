@@ -1,18 +1,126 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CBT Examination System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: #123c69;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background: #0b2948;
+            padding: 12px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .welcome {
+            background: white;
+            padding: 35px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px #00000015;
+        }
+
+        button {
+            background: #123c69;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 7px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 25px auto;
+            }
+
+            .welcome {
+                padding: 25px 15px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h1>Welcome to CBT Examination System</h1>
+    <header>
+        <h1>CBT EXAMINATION SYSTEM</h1>
+        <p>Learn, Practise and Test Your Knowledge</p>
+    </header>
 
-    <p>Test your knowledge online.</p>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+    </nav>
 
-    <button>Start Examination</button>
+    <div class="container">
+        <div class="welcome">
+            <h2>Welcome, Student!</h2>
+
+            <p>
+                Welcome to our Computer Based Test platform.
+                Prepare yourself and test your knowledge.
+            </p>
+
+            <button onclick="startExam()">
+                Start Examination
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 CBT Examination System</p>
+    </footer>
+
+    <script>
+        function startExam() {
+            alert("Your examination will begin soon!");
+        }
+    </script>
 
 </body>
 </html>
