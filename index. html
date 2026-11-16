@@ -4,7 +4,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>CBT Examination System</title>
 
 <style>
@@ -22,12 +21,12 @@ body {
 header {
     background: #123c69;
     color: white;
-    padding: 22px 10px;
     text-align: center;
+    padding: 22px 10px;
 }
 
 .container {
-    max-width: 750px;
+    max-width: 800px;
     margin: 30px auto;
     padding: 15px;
 }
@@ -41,11 +40,33 @@ header {
 
 input[type="text"] {
     width: 100%;
-    padding: 14px;
-    margin: 10px 0;
+    padding: 13px;
+    margin: 9px 0 17px;
     border: 1px solid #cbd5e1;
     border-radius: 7px;
     font-size: 16px;
+}
+
+.subject {
+    display: block;
+    padding: 14px;
+    margin: 10px 0;
+    background: #f1f5f9;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.subject input {
+    margin-right: 10px;
+}
+
+.option {
+    display: block;
+    padding: 14px;
+    margin: 10px 0;
+    background: #f1f5f9;
+    border-radius: 7px;
+    cursor: pointer;
 }
 
 button {
@@ -63,27 +84,14 @@ button:hover {
     background: #2563eb;
 }
 
-.option {
-    display: block;
-    background: #f1f5f9;
-    padding: 14px;
-    margin: 10px 0;
-    border-radius: 7px;
-    cursor: pointer;
-}
-
-.option input {
-    margin-right: 10px;
-}
-
 #examPage, #resultPage {
     display: none;
 }
 
 #timer {
     color: #dc2626;
-    font-size: 21px;
     font-weight: bold;
+    font-size: 21px;
 }
 
 .progress {
@@ -104,7 +112,13 @@ button:hover {
     background: #eff6ff;
     padding: 12px;
     border-radius: 7px;
-    margin-bottom: 15px;
+}
+
+.subject-result {
+    background: #f1f5f9;
+    padding: 13px;
+    margin: 10px 0;
+    border-radius: 7px;
 }
 
 footer {
@@ -120,10 +134,6 @@ footer {
 
     .box {
         padding: 18px;
-    }
-
-    button {
-        padding: 12px 15px;
     }
 }
 </style>
@@ -142,18 +152,41 @@ footer {
     <div class="box" id="homePage">
 
         <h2>Welcome, Student!</h2>
+        <p>Enter your details and select your examination subjects.</p>
 
-        <p>Enter your details before starting your examination.</p>
-
-        <label for="studentName">Full Name</label>
+        <label>Full Name</label>
         <input type="text" id="studentName"
         placeholder="Enter your full name">
 
-        <label for="registrationNumber">Registration Number</label>
+        <label>Registration Number</label>
         <input type="text" id="registrationNumber"
         placeholder="Enter your registration number">
 
-        <br>
+        <h3>Select Your Subjects</h3>
+
+        <label class="subject">
+            <input type="checkbox" name="subjects"
+            value="English Language">
+            English Language
+        </label>
+
+        <label class="subject">
+            <input type="checkbox" name="subjects"
+            value="Mathematics">
+            Mathematics
+        </label>
+
+        <label class="subject">
+            <input type="checkbox" name="subjects"
+            value="Computer Studies">
+            Computer Studies
+        </label>
+
+        <label class="subject">
+            <input type="checkbox" name="subjects"
+            value="Basic Science">
+            Basic Science
+        </label>
 
         <button onclick="startExam()">
             Start Examination
@@ -165,14 +198,16 @@ footer {
     <div class="box" id="examPage">
 
         <div class="student-info">
-            <p><strong>Student:</strong> <span id="displayName"></span></p>
+            <p><strong>Student:</strong>
+            <span id="displayName"></span></p>
+
             <p><strong>Registration No:</strong>
             <span id="displayReg"></span></p>
         </div>
 
-        <h2>General Knowledge Examination</h2>
+        <h2>Examination</h2>
 
-        <p>Time Remaining: <span id="timer">05:00</span></p>
+        <p>Time Remaining: <span id="timer">15:00</span></p>
 
         <div class="progress">
             <div id="progressBar"></div>
@@ -180,21 +215,17 @@ footer {
 
         <p id="questionNumber"></p>
 
+        <h3 id="subjectName"></h3>
+
         <h3 id="question"></h3>
 
         <div id="options"></div>
 
-        <button onclick="previousQuestion()">
-            Previous
-        </button>
+        <button onclick="previousQuestion()">Previous</button>
 
-        <button onclick="nextQuestion()">
-            Next
-        </button>
+        <button onclick="nextQuestion()">Next</button>
 
-        <button onclick="submitExam()">
-            Submit Examination
-        </button>
+        <button onclick="submitExam()">Submit Examination</button>
 
     </div>
 
@@ -203,7 +234,7 @@ footer {
 
         <h2>Examination Result</h2>
 
-        <p><strong>Student Name:</strong>
+        <p><strong>Student:</strong>
         <span id="resultName"></span></p>
 
         <p><strong>Registration Number:</strong>
@@ -211,9 +242,15 @@ footer {
 
         <hr>
 
-        <h2 id="score"></h2>
+        <h3>Subject Results</h3>
 
-        <p id="percentage"></p>
+        <div id="subjectResults"></div>
+
+        <hr>
+
+        <h2 id="totalScore"></h2>
+
+        <h2 id="percentage"></h2>
 
         <h3 id="remark"></h3>
 
@@ -231,46 +268,101 @@ footer {
 
 <script>
 
-const questions = [
+// SUBJECT QUESTIONS
 
-    {
-        question: "What is the capital of Nigeria?",
-        options: ["Lagos", "Abuja", "Kano", "Ibadan"],
-        answer: 1
-    },
+const subjects = {
 
-    {
-        question: "Which device is used to type on a computer?",
-        options: ["Monitor", "Mouse", "Keyboard", "Speaker"],
-        answer: 2
-    },
+    "English Language": [
+        {
+            question: "Which of these is a noun?",
+            options: ["Run", "Beautiful", "Teacher", "Quickly"],
+            answer: 2
+        },
+        {
+            question: "What is the opposite of hot?",
+            options: ["Cold", "Warm", "Fire", "Heat"],
+            answer: 0
+        },
+        {
+            question: "Which word is a verb?",
+            options: ["Table", "Jump", "Blue", "School"],
+            answer: 1
+        }
+    ],
 
-    {
-        question: "What is 5 + 5?",
-        options: ["8", "10", "12", "15"],
-        answer: 1
-    },
+    "Mathematics": [
+        {
+            question: "What is 5 + 5?",
+            options: ["8", "10", "12", "15"],
+            answer: 1
+        },
+        {
+            question: "What is 12 × 2?",
+            options: ["20", "22", "24", "26"],
+            answer: 2
+        },
+        {
+            question: "What is half of 100?",
+            options: ["20", "25", "50", "75"],
+            answer: 2
+        }
+    ],
 
-    {
-        question: "Which planet do we live on?",
-        options: ["Mars", "Jupiter", "Earth", "Venus"],
-        answer: 2
-    },
+    "Computer Studies": [
+        {
+            question: "Which device is used for typing?",
+            options: ["Monitor", "Mouse", "Keyboard", "Speaker"],
+            answer: 2
+        },
+        {
+            question: "What does CPU mean?",
+            options: [
+                "Central Processing Unit",
+                "Computer Personal Unit",
+                "Central Program Utility",
+                "Control Processing User"
+            ],
+            answer: 0
+        },
+        {
+            question: "Which language creates web pages?",
+            options: ["HTML", "English", "Music", "History"],
+            answer: 0
+        }
+    ],
 
-    {
-        question: "Which language is used to create web pages?",
-        options: ["HTML", "English", "Mathematics", "Music"],
-        answer: 0
-    }
+    "Basic Science": [
+        {
+            question: "Which planet do humans live on?",
+            options: ["Mars", "Earth", "Jupiter", "Venus"],
+            answer: 1
+        },
+        {
+            question: "Which gas do humans breathe in?",
+            options: ["Oxygen", "Carbon dioxide", "Nitrogen only", "Smoke"],
+            answer: 0
+        },
+        {
+            question: "What is the main source of energy for Earth?",
+            options: ["Moon", "Stars", "Sun", "Wind"],
+            answer: 2
+        }
+    ]
 
-];
+};
 
-let currentQuestion = 0;
-let answers = [];
-let timeLeft = 300;
-let timerInterval;
+
+// VARIABLES
+
 let studentName = "";
 let registrationNumber = "";
+
+let examQuestions = [];
+let answers = [];
+
+let currentQuestion = 0;
+let timeLeft = 900;
+let timerInterval;
 let examSubmitted = false;
 
 
@@ -282,17 +374,47 @@ function startExam() {
 
     registrationNumber = document.getElementById("registrationNumber").value.trim();
 
+    let selectedSubjects = Array.from(
+        document.querySelectorAll(
+            'input[name="subjects"]:checked'
+        )
+    ).map(function(item) {
+        return item.value;
+    });
+
     if (studentName === "" || registrationNumber === "") {
         alert("Please enter your full name and registration number.");
         return;
     }
 
-    document.getElementById("displayName").textContent = studentName;
+    if (selectedSubjects.length === 0) {
+        alert("Please select at least one subject.");
+        return;
+    }
 
+    examQuestions = [];
+
+    selectedSubjects.forEach(function(subject) {
+
+        subjects[subject].forEach(function(q) {
+
+            examQuestions.push({
+                subject: subject,
+                question: q.question,
+                options: q.options,
+                answer: q.answer
+            });
+
+        });
+
+    });
+
+    answers = [];
+
+    document.getElementById("displayName").textContent = studentName;
     document.getElementById("displayReg").textContent = registrationNumber;
 
     document.getElementById("homePage").style.display = "none";
-
     document.getElementById("examPage").style.display = "block";
 
     showQuestion();
@@ -321,11 +443,14 @@ function startExam() {
 
 function showQuestion() {
 
-    let q = questions[currentQuestion];
+    let q = examQuestions[currentQuestion];
 
     document.getElementById("questionNumber").textContent =
         "Question " + (currentQuestion + 1) +
-        " of " + questions.length;
+        " of " + examQuestions.length;
+
+    document.getElementById("subjectName").textContent =
+        "Subject: " + q.subject;
 
     document.getElementById("question").textContent = q.question;
 
@@ -348,9 +473,11 @@ function showQuestion() {
 
     document.getElementById("options").innerHTML = optionsHTML;
 
-    let progress = ((currentQuestion + 1) / questions.length) * 100;
+    let progress =
+        ((currentQuestion + 1) / examQuestions.length) * 100;
 
-    document.getElementById("progressBar").style.width = progress + "%";
+    document.getElementById("progressBar").style.width =
+        progress + "%";
 
 }
 
@@ -376,15 +503,14 @@ function nextQuestion() {
 
     saveAnswer();
 
-    if (currentQuestion < questions.length - 1) {
+    if (currentQuestion < examQuestions.length - 1) {
 
         currentQuestion++;
-
         showQuestion();
 
     } else {
 
-        alert("You have reached the last question. Submit your examination when ready.");
+        alert("You have reached the last question. You can now submit.");
 
     }
 
@@ -400,7 +526,6 @@ function previousQuestion() {
     if (currentQuestion > 0) {
 
         currentQuestion--;
-
         showQuestion();
 
     }
@@ -415,11 +540,13 @@ function submitExam(timeUp = false) {
     if (examSubmitted) return;
 
     if (!timeUp) {
-        let confirmSubmit = confirm(
+
+        let confirmation = confirm(
             "Are you sure you want to submit your examination?"
         );
 
-        if (!confirmSubmit) return;
+        if (!confirmation) return;
+
     }
 
     saveAnswer();
@@ -428,35 +555,73 @@ function submitExam(timeUp = false) {
 
     clearInterval(timerInterval);
 
-    let score = 0;
+    let totalScore = 0;
+    let subjectScores = {};
 
-    questions.forEach(function(q, index) {
+    examQuestions.forEach(function(q, index) {
+
+        if (!subjectScores[q.subject]) {
+            subjectScores[q.subject] = {
+                score: 0,
+                total: 0
+            };
+        }
+
+        subjectScores[q.subject].total++;
 
         if (answers[index] === q.answer) {
-            score++;
+
+            totalScore++;
+            subjectScores[q.subject].score++;
+
         }
 
     });
 
-    let percent = (score / questions.length) * 100;
+    let totalQuestions = examQuestions.length;
+
+    let percent = Math.round(
+        (totalScore / totalQuestions) * 100
+    );
 
     document.getElementById("examPage").style.display = "none";
-
     document.getElementById("resultPage").style.display = "block";
 
     document.getElementById("resultName").textContent = studentName;
-
     document.getElementById("resultReg").textContent = registrationNumber;
 
-    document.getElementById("score").textContent =
-        "Your Score: " + score + " / " + questions.length;
+    let resultHTML = "";
+
+    Object.keys(subjectScores).forEach(function(subject) {
+
+        let result = subjectScores[subject];
+
+        let subjectPercent = Math.round(
+            (result.score / result.total) * 100
+        );
+
+        resultHTML += `
+            <div class="subject-result">
+                <strong>${subject}</strong>
+                <p>Score: ${result.score} / ${result.total}</p>
+                <p>Percentage: ${subjectPercent}%</p>
+            </div>
+        `;
+
+    });
+
+    document.getElementById("subjectResults").innerHTML = resultHTML;
+
+    document.getElementById("totalScore").textContent =
+        "Total Score: " + totalScore + " / " + totalQuestions;
 
     document.getElementById("percentage").textContent =
-        "Percentage: " + percent + "%";
+        "Overall Percentage: " + percent + "%";
 
     document.getElementById("remark").textContent =
-        percent >= 50 ? "Congratulations! You passed." :
-        "Keep practising. You can do better!";
+        percent >= 50
+        ? "Congratulations! You passed."
+        : "Keep practising. You can do better!";
 
     if (timeUp) {
         alert("Time is up! Your examination has been submitted.");
