@@ -2,86 +2,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CBT Examination System</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<title>CBT Examination System</title>
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            color: #1e293b;
-        }
+<style>
+* {
+    box-sizing: border-box;
+}
 
-        header {
-            background: #123c69;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+}
 
-        .container {
-            max-width: 750px;
-            margin: 30px auto;
-            padding: 15px;
-        }
+header {
+    background: #123c69;
+    color: white;
+    padding: 22px 10px;
+    text-align: center;
+}
 
-        .box {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px #00000015;
-        }
+.container {
+    max-width: 750px;
+    margin: 30px auto;
+    padding: 15px;
+}
 
-        button {
-            background: #123c69;
-            color: white;
-            border: none;
-            padding: 13px 22px;
-            border-radius: 7px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 12px;
-        }
+.box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px #00000015;
+}
 
-        button:hover {
-            background: #2563eb;
-        }
+input[type="text"] {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    font-size: 16px;
+}
 
-        .option {
-            display: block;
-            background: #f1f5f9;
-            padding: 13px;
-            margin: 10px 0;
-            border-radius: 7px;
-            cursor: pointer;
-        }
+button {
+    background: #123c69;
+    color: white;
+    border: none;
+    padding: 13px 20px;
+    border-radius: 7px;
+    font-size: 15px;
+    cursor: pointer;
+    margin: 8px 4px 8px 0;
+}
 
-        .option input {
-            margin-right: 10px;
-        }
+button:hover {
+    background: #2563eb;
+}
 
-        #examPage, #resultPage {
-            display: none;
-        }
+.option {
+    display: block;
+    background: #f1f5f9;
+    padding: 14px;
+    margin: 10px 0;
+    border-radius: 7px;
+    cursor: pointer;
+}
 
-        #timer {
-            color: #dc2626;
-            font-weight: bold;
-            font-size: 20px;
-        }
+.option input {
+    margin-right: 10px;
+}
 
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #64748b;
-        }
-    </style>
+#examPage, #resultPage {
+    display: none;
+}
+
+#timer {
+    color: #dc2626;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.progress {
+    background: #e2e8f0;
+    height: 9px;
+    border-radius: 10px;
+    margin: 15px 0;
+}
+
+#progressBar {
+    background: #2563eb;
+    height: 9px;
+    width: 0%;
+    border-radius: 10px;
+}
+
+.student-info {
+    background: #eff6ff;
+    padding: 12px;
+    border-radius: 7px;
+    margin-bottom: 15px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #64748b;
+}
+
+@media(max-width: 600px) {
+    .container {
+        margin: 15px auto;
+    }
+
+    .box {
+        padding: 18px;
+    }
+
+    button {
+        padding: 12px 15px;
+    }
+}
+</style>
 </head>
 
 <body>
@@ -95,37 +140,87 @@
 
     <!-- HOME PAGE -->
     <div class="box" id="homePage">
+
         <h2>Welcome, Student!</h2>
-        <p>Welcome to our Computer Based Test platform.</p>
-        <p>Click below to begin your examination.</p>
-        <button onclick="startExam()">Start Examination</button>
+
+        <p>Enter your details before starting your examination.</p>
+
+        <label for="studentName">Full Name</label>
+        <input type="text" id="studentName"
+        placeholder="Enter your full name">
+
+        <label for="registrationNumber">Registration Number</label>
+        <input type="text" id="registrationNumber"
+        placeholder="Enter your registration number">
+
+        <br>
+
+        <button onclick="startExam()">
+            Start Examination
+        </button>
+
     </div>
 
     <!-- EXAMINATION PAGE -->
     <div class="box" id="examPage">
+
+        <div class="student-info">
+            <p><strong>Student:</strong> <span id="displayName"></span></p>
+            <p><strong>Registration No:</strong>
+            <span id="displayReg"></span></p>
+        </div>
+
         <h2>General Knowledge Examination</h2>
-        <p>Time remaining: <span id="timer">05:00</span></p>
+
+        <p>Time Remaining: <span id="timer">05:00</span></p>
+
+        <div class="progress">
+            <div id="progressBar"></div>
+        </div>
+
         <p id="questionNumber"></p>
 
         <h3 id="question"></h3>
 
         <div id="options"></div>
 
-        <button onclick="nextQuestion()" id="nextButton">
-            Next Question
+        <button onclick="previousQuestion()">
+            Previous
+        </button>
+
+        <button onclick="nextQuestion()">
+            Next
         </button>
 
         <button onclick="submitExam()">
             Submit Examination
         </button>
+
     </div>
 
     <!-- RESULT PAGE -->
     <div class="box" id="resultPage">
-        <h2>Examination Completed!</h2>
-        <h3 id="score"></h3>
-        <p id="remark"></p>
-        <button onclick="location.reload()">Try Again</button>
+
+        <h2>Examination Result</h2>
+
+        <p><strong>Student Name:</strong>
+        <span id="resultName"></span></p>
+
+        <p><strong>Registration Number:</strong>
+        <span id="resultReg"></span></p>
+
+        <hr>
+
+        <h2 id="score"></h2>
+
+        <p id="percentage"></p>
+
+        <h3 id="remark"></h3>
+
+        <button onclick="location.reload()">
+            Take Another Examination
+        </button>
+
     </div>
 
 </div>
@@ -136,135 +231,238 @@
 
 <script>
 
-    const questions = [
-        {
-            question: "What is the capital of Nigeria?",
-            options: ["Lagos", "Abuja", "Kano", "Ibadan"],
-            answer: 1
-        },
-        {
-            question: "Which device is used to type on a computer?",
-            options: ["Monitor", "Mouse", "Keyboard", "Speaker"],
-            answer: 2
-        },
-        {
-            question: "What is 5 + 5?",
-            options: ["8", "10", "12", "15"],
-            answer: 1
-        },
-        {
-            question: "Which planet do we live on?",
-            options: ["Mars", "Jupiter", "Earth", "Venus"],
-            answer: 2
-        },
-        {
-            question: "Which language is used to create web pages?",
-            options: ["HTML", "English", "Mathematics", "Music"],
-            answer: 0
+const questions = [
+
+    {
+        question: "What is the capital of Nigeria?",
+        options: ["Lagos", "Abuja", "Kano", "Ibadan"],
+        answer: 1
+    },
+
+    {
+        question: "Which device is used to type on a computer?",
+        options: ["Monitor", "Mouse", "Keyboard", "Speaker"],
+        answer: 2
+    },
+
+    {
+        question: "What is 5 + 5?",
+        options: ["8", "10", "12", "15"],
+        answer: 1
+    },
+
+    {
+        question: "Which planet do we live on?",
+        options: ["Mars", "Jupiter", "Earth", "Venus"],
+        answer: 2
+    },
+
+    {
+        question: "Which language is used to create web pages?",
+        options: ["HTML", "English", "Mathematics", "Music"],
+        answer: 0
+    }
+
+];
+
+let currentQuestion = 0;
+let answers = [];
+let timeLeft = 300;
+let timerInterval;
+let studentName = "";
+let registrationNumber = "";
+let examSubmitted = false;
+
+
+// START EXAMINATION
+
+function startExam() {
+
+    studentName = document.getElementById("studentName").value.trim();
+
+    registrationNumber = document.getElementById("registrationNumber").value.trim();
+
+    if (studentName === "" || registrationNumber === "") {
+        alert("Please enter your full name and registration number.");
+        return;
+    }
+
+    document.getElementById("displayName").textContent = studentName;
+
+    document.getElementById("displayReg").textContent = registrationNumber;
+
+    document.getElementById("homePage").style.display = "none";
+
+    document.getElementById("examPage").style.display = "block";
+
+    showQuestion();
+
+    timerInterval = setInterval(function() {
+
+        timeLeft--;
+
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+
+        document.getElementById("timer").textContent =
+            String(minutes).padStart(2, "0") + ":" +
+            String(seconds).padStart(2, "0");
+
+        if (timeLeft <= 0) {
+            submitExam(true);
         }
-    ];
 
-    let currentQuestion = 0;
-    let answers = [];
-    let timeLeft = 300;
-    let timerInterval;
+    }, 1000);
 
-    function startExam() {
-        document.getElementById("homePage").style.display = "none";
-        document.getElementById("examPage").style.display = "block";
+}
+
+
+// DISPLAY QUESTION
+
+function showQuestion() {
+
+    let q = questions[currentQuestion];
+
+    document.getElementById("questionNumber").textContent =
+        "Question " + (currentQuestion + 1) +
+        " of " + questions.length;
+
+    document.getElementById("question").textContent = q.question;
+
+    let optionsHTML = "";
+
+    q.options.forEach(function(option, index) {
+
+        let checked = answers[currentQuestion] === index
+            ? "checked" : "";
+
+        optionsHTML += `
+            <label class="option">
+                <input type="radio" name="answer"
+                value="${index}" ${checked}>
+                ${option}
+            </label>
+        `;
+
+    });
+
+    document.getElementById("options").innerHTML = optionsHTML;
+
+    let progress = ((currentQuestion + 1) / questions.length) * 100;
+
+    document.getElementById("progressBar").style.width = progress + "%";
+
+}
+
+
+// SAVE ANSWER
+
+function saveAnswer() {
+
+    let selected = document.querySelector(
+        'input[name="answer"]:checked'
+    );
+
+    if (selected) {
+        answers[currentQuestion] = Number(selected.value);
+    }
+
+}
+
+
+// NEXT QUESTION
+
+function nextQuestion() {
+
+    saveAnswer();
+
+    if (currentQuestion < questions.length - 1) {
+
+        currentQuestion++;
 
         showQuestion();
 
-        timerInterval = setInterval(function() {
-            timeLeft--;
+    } else {
 
-            let minutes = Math.floor(timeLeft / 60);
-            let seconds = timeLeft % 60;
+        alert("You have reached the last question. Submit your examination when ready.");
 
-            document.getElementById("timer").textContent =
-                String(minutes).padStart(2, "0") + ":" +
-                String(seconds).padStart(2, "0");
-
-            if (timeLeft <= 0) {
-                submitExam();
-            }
-        }, 1000);
     }
 
-    function showQuestion() {
-        let q = questions[currentQuestion];
+}
 
-        document.getElementById("questionNumber").textContent =
-            "Question " + (currentQuestion + 1) +
-            " of " + questions.length;
 
-        document.getElementById("question").textContent = q.question;
+// PREVIOUS QUESTION
 
-        let optionsHTML = "";
+function previousQuestion() {
 
-        q.options.forEach(function(option, index) {
-            let checked = answers[currentQuestion] === index
-                ? "checked" : "";
+    saveAnswer();
 
-            optionsHTML += `
-                <label class="option">
-                    <input type="radio" name="answer"
-                    value="${index}" ${checked}>
-                    ${option}
-                </label>
-            `;
-        });
+    if (currentQuestion > 0) {
 
-        document.getElementById("options").innerHTML = optionsHTML;
+        currentQuestion--;
 
-        document.getElementById("nextButton").textContent =
-            currentQuestion === questions.length - 1
-                ? "Finish Questions" : "Next Question";
+        showQuestion();
+
     }
 
-    function saveAnswer() {
-        let selected = document.querySelector(
-            'input[name="answer"]:checked'
+}
+
+
+// SUBMIT EXAMINATION
+
+function submitExam(timeUp = false) {
+
+    if (examSubmitted) return;
+
+    if (!timeUp) {
+        let confirmSubmit = confirm(
+            "Are you sure you want to submit your examination?"
         );
 
-        if (selected) {
-            answers[currentQuestion] = Number(selected.value);
+        if (!confirmSubmit) return;
+    }
+
+    saveAnswer();
+
+    examSubmitted = true;
+
+    clearInterval(timerInterval);
+
+    let score = 0;
+
+    questions.forEach(function(q, index) {
+
+        if (answers[index] === q.answer) {
+            score++;
         }
+
+    });
+
+    let percent = (score / questions.length) * 100;
+
+    document.getElementById("examPage").style.display = "none";
+
+    document.getElementById("resultPage").style.display = "block";
+
+    document.getElementById("resultName").textContent = studentName;
+
+    document.getElementById("resultReg").textContent = registrationNumber;
+
+    document.getElementById("score").textContent =
+        "Your Score: " + score + " / " + questions.length;
+
+    document.getElementById("percentage").textContent =
+        "Percentage: " + percent + "%";
+
+    document.getElementById("remark").textContent =
+        percent >= 50 ? "Congratulations! You passed." :
+        "Keep practising. You can do better!";
+
+    if (timeUp) {
+        alert("Time is up! Your examination has been submitted.");
     }
 
-    function nextQuestion() {
-        saveAnswer();
-
-        if (currentQuestion < questions.length - 1) {
-            currentQuestion++;
-            showQuestion();
-        } else {
-            submitExam();
-        }
-    }
-
-    function submitExam() {
-        clearInterval(timerInterval);
-        saveAnswer();
-
-        let score = 0;
-
-        questions.forEach(function(q, index) {
-            if (answers[index] === q.answer) {
-                score++;
-            }
-        });
-
-        document.getElementById("examPage").style.display = "none";
-        document.getElementById("resultPage").style.display = "block";
-
-        document.getElementById("score").textContent =
-            "Your Score: " + score + " / " + questions.length;
-
-        document.getElementById("remark").textContent =
-            score >= 3 ? "Well done! You passed." :
-            "Keep practising. You can do better!";
-    }
+}
 
 </script>
 
