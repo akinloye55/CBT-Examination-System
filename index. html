@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,28 +25,15 @@
             text-align: center;
         }
 
-        nav {
-            background: #0b2948;
-            padding: 12px;
-            text-align: center;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 10px;
-        }
-
         .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            text-align: center;
+            max-width: 750px;
+            margin: 30px auto;
+            padding: 15px;
         }
 
-        .welcome {
+        .box {
             background: white;
-            padding: 35px 20px;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 12px #00000015;
         }
@@ -56,14 +42,38 @@
             background: #123c69;
             color: white;
             border: none;
-            padding: 14px 25px;
+            padding: 13px 22px;
             border-radius: 7px;
             font-size: 16px;
             cursor: pointer;
+            margin-top: 12px;
         }
 
         button:hover {
             background: #2563eb;
+        }
+
+        .option {
+            display: block;
+            background: #f1f5f9;
+            padding: 13px;
+            margin: 10px 0;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .option input {
+            margin-right: 10px;
+        }
+
+        #examPage, #resultPage {
+            display: none;
+        }
+
+        #timer {
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 20px;
         }
 
         footer {
@@ -71,56 +81,192 @@
             padding: 20px;
             color: #64748b;
         }
-
-        @media (max-width: 600px) {
-            .container {
-                margin: 25px auto;
-            }
-
-            .welcome {
-                padding: 25px 15px;
-            }
-        }
     </style>
 </head>
 
 <body>
 
-    <header>
-        <h1>CBT EXAMINATION SYSTEM</h1>
-        <p>Learn, Practise and Test Your Knowledge</p>
-    </header>
+<header>
+    <h1>CBT EXAMINATION SYSTEM</h1>
+    <p>Learn, Practise and Test Your Knowledge</p>
+</header>
 
-    <nav>
-        <a href="#">Home</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-    </nav>
+<div class="container">
 
-    <div class="container">
-        <div class="welcome">
-            <h2>Welcome, Student!</h2>
-
-            <p>
-                Welcome to our Computer Based Test platform.
-                Prepare yourself and test your knowledge.
-            </p>
-
-            <button onclick="startExam()">
-                Start Examination
-            </button>
-        </div>
+    <!-- HOME PAGE -->
+    <div class="box" id="homePage">
+        <h2>Welcome, Student!</h2>
+        <p>Welcome to our Computer Based Test platform.</p>
+        <p>Click below to begin your examination.</p>
+        <button onclick="startExam()">Start Examination</button>
     </div>
 
-    <footer>
-        <p>© 2026 CBT Examination System</p>
-    </footer>
+    <!-- EXAMINATION PAGE -->
+    <div class="box" id="examPage">
+        <h2>General Knowledge Examination</h2>
+        <p>Time remaining: <span id="timer">05:00</span></p>
+        <p id="questionNumber"></p>
 
-    <script>
-        function startExam() {
-            alert("Your examination will begin soon!");
+        <h3 id="question"></h3>
+
+        <div id="options"></div>
+
+        <button onclick="nextQuestion()" id="nextButton">
+            Next Question
+        </button>
+
+        <button onclick="submitExam()">
+            Submit Examination
+        </button>
+    </div>
+
+    <!-- RESULT PAGE -->
+    <div class="box" id="resultPage">
+        <h2>Examination Completed!</h2>
+        <h3 id="score"></h3>
+        <p id="remark"></p>
+        <button onclick="location.reload()">Try Again</button>
+    </div>
+
+</div>
+
+<footer>
+    <p>© 2026 CBT Examination System</p>
+</footer>
+
+<script>
+
+    const questions = [
+        {
+            question: "What is the capital of Nigeria?",
+            options: ["Lagos", "Abuja", "Kano", "Ibadan"],
+            answer: 1
+        },
+        {
+            question: "Which device is used to type on a computer?",
+            options: ["Monitor", "Mouse", "Keyboard", "Speaker"],
+            answer: 2
+        },
+        {
+            question: "What is 5 + 5?",
+            options: ["8", "10", "12", "15"],
+            answer: 1
+        },
+        {
+            question: "Which planet do we live on?",
+            options: ["Mars", "Jupiter", "Earth", "Venus"],
+            answer: 2
+        },
+        {
+            question: "Which language is used to create web pages?",
+            options: ["HTML", "English", "Mathematics", "Music"],
+            answer: 0
         }
-    </script>
+    ];
+
+    let currentQuestion = 0;
+    let answers = [];
+    let timeLeft = 300;
+    let timerInterval;
+
+    function startExam() {
+        document.getElementById("homePage").style.display = "none";
+        document.getElementById("examPage").style.display = "block";
+
+        showQuestion();
+
+        timerInterval = setInterval(function() {
+            timeLeft--;
+
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+
+            document.getElementById("timer").textContent =
+                String(minutes).padStart(2, "0") + ":" +
+                String(seconds).padStart(2, "0");
+
+            if (timeLeft <= 0) {
+                submitExam();
+            }
+        }, 1000);
+    }
+
+    function showQuestion() {
+        let q = questions[currentQuestion];
+
+        document.getElementById("questionNumber").textContent =
+            "Question " + (currentQuestion + 1) +
+            " of " + questions.length;
+
+        document.getElementById("question").textContent = q.question;
+
+        let optionsHTML = "";
+
+        q.options.forEach(function(option, index) {
+            let checked = answers[currentQuestion] === index
+                ? "checked" : "";
+
+            optionsHTML += `
+                <label class="option">
+                    <input type="radio" name="answer"
+                    value="${index}" ${checked}>
+                    ${option}
+                </label>
+            `;
+        });
+
+        document.getElementById("options").innerHTML = optionsHTML;
+
+        document.getElementById("nextButton").textContent =
+            currentQuestion === questions.length - 1
+                ? "Finish Questions" : "Next Question";
+    }
+
+    function saveAnswer() {
+        let selected = document.querySelector(
+            'input[name="answer"]:checked'
+        );
+
+        if (selected) {
+            answers[currentQuestion] = Number(selected.value);
+        }
+    }
+
+    function nextQuestion() {
+        saveAnswer();
+
+        if (currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            showQuestion();
+        } else {
+            submitExam();
+        }
+    }
+
+    function submitExam() {
+        clearInterval(timerInterval);
+        saveAnswer();
+
+        let score = 0;
+
+        questions.forEach(function(q, index) {
+            if (answers[index] === q.answer) {
+                score++;
+            }
+        });
+
+        document.getElementById("examPage").style.display = "none";
+        document.getElementById("resultPage").style.display = "block";
+
+        document.getElementById("score").textContent =
+            "Your Score: " + score + " / " + questions.length;
+
+        document.getElementById("remark").textContent =
+            score >= 3 ? "Well done! You passed." :
+            "Keep practising. You can do better!";
+    }
+
+</script>
 
 </body>
 </html>
